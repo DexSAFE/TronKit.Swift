@@ -1,5 +1,5 @@
-import BigInt
 import Foundation
+import BigInt
 import ObjectMapper
 
 struct Trc20TransactionResponse: ImmutableMappable {
@@ -23,6 +23,7 @@ struct Trc20TransactionResponse: ImmutableMappable {
 }
 
 extension Trc20TransactionResponse {
+
     struct TokenInfo: ImmutableMappable {
         let symbol: String
         let address: Address
@@ -36,4 +37,5 @@ extension Trc20TransactionResponse {
             name = try map.value("name")
         }
     }
+
 }

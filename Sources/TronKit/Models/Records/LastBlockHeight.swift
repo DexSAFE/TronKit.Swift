@@ -11,7 +11,7 @@ class LastBlockHeight: Record {
     }
 
     override class var databaseTableName: String {
-        "last_block_height"
+        return "last_block_height"
     }
 
     enum Columns: String, ColumnExpression {
@@ -29,4 +29,5 @@ class LastBlockHeight: Record {
         container[Columns.primaryKey] = primaryKey
         container[Columns.height] = height
     }
+
 }

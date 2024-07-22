@@ -11,7 +11,7 @@ class TransactionSyncTimestamp: Record {
         super.init()
     }
 
-    override public class var databaseTableName: String {
+    public override class var databaseTableName: String {
         "transaction_sync_timestamps"
     }
 
@@ -27,8 +27,9 @@ class TransactionSyncTimestamp: Record {
         try super.init(row: row)
     }
 
-    override public func encode(to container: inout PersistenceContainer) {
+    public override func encode(to container: inout PersistenceContainer) {
         container[Columns.apiPath] = apiPath
         container[Columns.lastTransactionTimestamp] = lastTransactionTimestamp
     }
+
 }

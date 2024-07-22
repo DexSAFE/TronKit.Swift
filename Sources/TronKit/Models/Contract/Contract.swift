@@ -197,7 +197,6 @@ public struct ParticipateAssetIssueContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
     public let toAddress: Address
     public let assetName: String
@@ -258,7 +257,6 @@ public struct UnfreezeBalanceContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
     public let resource: String
     public let receiverAddress: Address
@@ -330,7 +328,6 @@ public struct ProposalCreateContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -472,7 +469,6 @@ public struct ExchangeCreateContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -487,7 +483,6 @@ public struct ExchangeInjectContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -502,7 +497,6 @@ public struct ExchangeWithdrawContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -517,7 +511,6 @@ public struct ExchangeTransactionContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -578,6 +571,7 @@ public struct UpdateEnergyLimitContract: Contract {
     }
 }
 
+
 public struct FreezeBalanceV2Contract: Contract {
     public static let type = "FreezeBalanceV2Contract"
     public var label = "Freeze Balance V2"
@@ -623,7 +617,6 @@ public struct WithdrawExpireUnfreezeContract: Contract {
     public func ownTransaction(ownAddress: Address) -> Bool {
         ownerAddress == ownAddress
     }
-
     public let ownerAddress: Address
 
     public init(map: Map) throws {
@@ -686,10 +679,10 @@ public struct UnknownContract: Contract {
     }
 
     public init(object: Any) throws {
-        data = try JSONSerialization.data(withJSONObject: object)
+        self.data = try JSONSerialization.data(withJSONObject: object)
     }
 
-    public func ownTransaction(ownAddress _: Address) -> Bool {
+    public func ownTransaction(ownAddress: Address) -> Bool {
         false
     }
 }

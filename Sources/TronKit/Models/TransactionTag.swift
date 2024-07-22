@@ -4,13 +4,11 @@ public class TransactionTag {
     public let type: TagType
     public let `protocol`: TagProtocol?
     public let contractAddress: Address?
-    public let addresses: [String]
 
-    public init(type: TagType, protocol: TagProtocol? = nil, contractAddress: Address? = nil, addresses: [String] = []) {
+    public init(type: TagType, `protocol`: TagProtocol? = nil, contractAddress: Address? = nil) {
         self.type = type
         self.protocol = `protocol`
         self.contractAddress = contractAddress
-        self.addresses = addresses
     }
 
     public func conforms(tagQuery: TransactionTagQuery) -> Bool {
@@ -26,29 +24,28 @@ public class TransactionTag {
             return false
         }
 
-        if let address = tagQuery.address?.lowercased(), !addresses.contains(address) {
-            return false
-        }
-
         return true
     }
+
 }
 
 extension TransactionTag: Hashable {
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(type)
         hasher.combine(`protocol`)
         hasher.combine(contractAddress)
-        hasher.combine(addresses)
     }
 
-    public static func == (lhs: TransactionTag, rhs: TransactionTag) -> Bool {
-        lhs.type == rhs.type && lhs.protocol == rhs.protocol && lhs.contractAddress == rhs.contractAddress && lhs.addresses == rhs.addresses
+    public static func ==(lhs: TransactionTag, rhs: TransactionTag) -> Bool {
+        lhs.type == rhs.type && lhs.protocol == rhs.protocol && lhs.contractAddress == rhs.contractAddress
     }
+
 }
 
-public extension TransactionTag {
-    enum TagProtocol: String, DatabaseValueConvertible {
+extension TransactionTag {
+
+    public enum TagProtocol: String, DatabaseValueConvertible {
         case native
         case trc10
         case eip20
@@ -61,15 +58,15 @@ public extension TransactionTag {
 
         public static func fromDatabaseValue(_ dbValue: DatabaseValue) -> TagProtocol? {
             switch dbValue.storage {
-            case let .string(string):
-                return TagProtocol(rawValue: string)
-            default:
-                return nil
+                case .string(let string):
+                    return TagProtocol(rawValue: string)
+                default:
+                    return nil
             }
         }
     }
 
-    enum TagType: String, DatabaseValueConvertible {
+    public enum TagType: String, DatabaseValueConvertible {
         case incoming
         case outgoing
         case approve
@@ -82,11 +79,12 @@ public extension TransactionTag {
 
         public static func fromDatabaseValue(_ dbValue: DatabaseValue) -> TagType? {
             switch dbValue.storage {
-            case let .string(string):
-                return TagType(rawValue: string)
-            default:
-                return nil
+                case .string(let string):
+                    return TagType(rawValue: string)
+                default:
+                    return nil
             }
         }
     }
+
 }

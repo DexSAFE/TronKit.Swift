@@ -1,5 +1,5 @@
-import BigInt
 import GRDB
+import BigInt
 
 class Balance: Record {
     let id: String
@@ -13,7 +13,7 @@ class Balance: Record {
     }
 
     override class var databaseTableName: String {
-        "balances"
+        return "balances"
     }
 
     enum Columns: String, ColumnExpression {
@@ -32,9 +32,11 @@ class Balance: Record {
         container[Columns.id] = id
         container[Columns.balance] = balance
     }
+
 }
 
 extension BigUInt: DatabaseValueConvertible {
+
     public var databaseValue: DatabaseValue {
         description.databaseValue
     }
@@ -46,4 +48,5 @@ extension BigUInt: DatabaseValueConvertible {
 
         return nil
     }
+
 }

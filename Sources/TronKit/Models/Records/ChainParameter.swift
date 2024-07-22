@@ -11,7 +11,7 @@ class ChainParameter: Record {
         super.init()
     }
 
-    override public class var databaseTableName: String {
+    public override class var databaseTableName: String {
         "chain_parameters"
     }
 
@@ -27,8 +27,9 @@ class ChainParameter: Record {
         try super.init(row: row)
     }
 
-    override public func encode(to container: inout PersistenceContainer) {
+    public override func encode(to container: inout PersistenceContainer) {
         container[Columns.key] = key
         container[Columns.value] = value
     }
+
 }

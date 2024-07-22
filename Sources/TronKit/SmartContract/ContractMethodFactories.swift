@@ -40,4 +40,5 @@ open class ContractMethodFactories {
 
         return try? factory?.createMethod(inputArguments: Data(input.suffix(from: 4)))
     }
+
 }

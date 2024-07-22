@@ -1,6 +1,6 @@
-import Alamofire
-import BigInt
 import Foundation
+import BigInt
+import Alamofire
 import HsToolKit
 
 class TronGridProvider {
@@ -17,7 +17,7 @@ class TronGridProvider {
 
         var headers = HTTPHeaders()
 
-        if let apiKey {
+        if let apiKey = apiKey {
             headers.add(.init(name: "TRON-PRO-API-KEY", value: apiKey))
         }
 
@@ -25,7 +25,7 @@ class TronGridProvider {
     }
 
     private func rpcApiFetch(parameters: [String: Any]) async throws -> Any {
-        try await networkManager.fetchJson(
+        return try await networkManager.fetchJson(
             url: baseUrl + "jsonrpc",
             method: .post,
             parameters: parameters,
@@ -70,8 +70,7 @@ class TronGridProvider {
         }
 
         guard let resultMap = map["result"] as? [String: Any],
-              let successResult = resultMap["result"] as? Bool
-        else {
+              let successResult = resultMap["result"] as? Bool else {
             throw RequestError.invalidResponse
         }
 
@@ -84,10 +83,12 @@ class TronGridProvider {
 
         return map
     }
+
 }
 
 extension TronGridProvider: RequestInterceptor {
-    func retry(_: Request, for _: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+
+    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> ()) {
         if case let JsonRpcResponse.ResponseError.rpcError(rpcError) = error, rpcError.code == -32005 {
             var backoffSeconds = 1.0
 
@@ -100,9 +101,11 @@ extension TronGridProvider: RequestInterceptor {
             completion(.doNotRetry)
         }
     }
+
 }
 
 extension TronGridProvider {
+
     var source: String {
         baseUrl
     }
@@ -135,7 +138,7 @@ extension TronGridProvider {
             "only_confirmed": true,
             "order_by": "block_timestamp,asc",
             "limit": pageLimit,
-            "min_timestamp": minTimestamp,
+            "min_timestamp": minTimestamp
         ]
 
         fingerprint.flatMap { parameters["fingerprint"] = $0 }
@@ -161,7 +164,7 @@ extension TronGridProvider {
             "only_confirmed": true,
             "order_by": "block_timestamp,asc",
             "limit": pageLimit,
-            "min_timestamp": minTimestamp,
+            "min_timestamp": minTimestamp
         ]
 
         fingerprint.flatMap { parameters["fingerprint"] = $0 }
@@ -180,7 +183,7 @@ extension TronGridProvider {
             "owner_address": ownerAddress,
             "contract_address": contractAddress,
             "function_selector": functionSelector,
-            "parameter": parameter,
+            "parameter": parameter
         ]
 
         let result = try await requestNodeApiFetch(path: path, parameters: parameters)
@@ -212,7 +215,7 @@ extension TronGridProvider {
         let parameters: Parameters = [
             "owner_address": ownerAddress,
             "to_address": toAddress,
-            "amount": amount,
+            "amount": amount
         ]
         let json = try await networkManager.fetchJson(url: urlString, method: .post, parameters: parameters, encoding: JSONEncoding.default, responseCacherBehavior: .doNotCache)
 
@@ -226,15 +229,14 @@ extension TronGridProvider {
     func triggerSmartContract(
         ownerAddress: String, contractAddress: String, functionSelector: String, parameter: String,
         callValue: Int? = nil, callTokenValue: Int? = nil, tokenId: Int? = nil,
-        feeLimit: Int
-    ) async throws -> CreatedTransactionResponse {
+        feeLimit: Int) async throws -> CreatedTransactionResponse {
         let path = "wallet/triggersmartcontract"
         var parameters: Parameters = [
             "owner_address": ownerAddress,
             "contract_address": contractAddress,
             "function_selector": functionSelector,
             "parameter": parameter,
-            "fee_limit": feeLimit,
+            "fee_limit": feeLimit
         ]
 
         callValue.flatMap { parameters["call_value"] = $0 }
@@ -258,20 +260,25 @@ extension TronGridProvider {
 
         _ = try await networkManager.fetchJson(url: urlString, method: .post, parameters: parameters, encoding: JSONEncoding.default, responseCacherBehavior: .doNotCache)
     }
+
 }
 
 extension TronGridProvider {
+
     public enum RequestError: Error {
         case invalidResponse
         case invalidStatus
         case failedToFetchAccountInfo
         case fullNodeApiError(code: String, message: String)
     }
+
 }
 
 extension TronGridProvider {
+
     enum ApiPath: String {
-        case transactions
+        case transactions = "transactions"
         case transactionsTrc20 = "transactions/trc20"
     }
+
 }

@@ -59,6 +59,7 @@ struct TransactionResponse: ImmutableMappable, ITransactionResponse {
             timestamp = try map.value("timestamp")
         }
     }
+
 }
 
 struct InternalTransactionResponse: ImmutableMappable, ITransactionResponse {

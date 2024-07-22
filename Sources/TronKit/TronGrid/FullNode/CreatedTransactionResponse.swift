@@ -11,4 +11,5 @@ struct CreatedTransactionResponse: ImmutableMappable {
         rawData = try map.value("raw_data")
         rawDataHex = try map.value("raw_data_hex", using: HexDataTransform())
     }
+
 }

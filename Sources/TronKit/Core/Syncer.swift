@@ -16,8 +16,7 @@ class Syncer {
     @DistinctPublished private(set) var lastBlockHeight: Int = 0
 
     init(accountInfoManager: AccountInfoManager, transactionManager: TransactionManager, chainParameterManager: ChainParameterManager,
-         syncTimer: SyncTimer, tronGridProvider: TronGridProvider, storage: SyncerStorage, address: Address)
-    {
+         syncTimer: SyncTimer, tronGridProvider: TronGridProvider, storage: SyncerStorage, address: Address) {
         self.accountInfoManager = accountInfoManager
         self.transactionManager = transactionManager
         self.chainParameterManager = chainParameterManager
@@ -43,9 +42,11 @@ class Syncer {
             syncing = false
         }
     }
+
 }
 
 extension Syncer {
+
     var source: String {
         "RPC \(tronGridProvider.source)"
     }
@@ -67,15 +68,17 @@ extension Syncer {
             syncTimer.start()
         }
     }
+
 }
 
 extension Syncer: ISyncTimerDelegate {
+
     func didUpdate(state: SyncTimer.State) {
         switch state {
         case .ready:
             set(state: .syncing(progress: nil))
             sync()
-        case let .notReady(error):
+        case .notReady(let error):
             tasks = Set()
             set(state: .notSynced(error: error))
         }
@@ -143,8 +146,7 @@ extension Syncer: ISyncTimerDelegate {
                 self?.set(state: .synced)
             } catch {
                 if let requestError = error as? TronGridProvider.RequestError,
-                   case .failedToFetchAccountInfo = requestError
-                {
+                   case .failedToFetchAccountInfo = requestError {
                     self?.accountInfoManager.handleInactiveAccount()
                     self?.set(state: .synced)
                 } else {
@@ -153,4 +155,5 @@ extension Syncer: ISyncTimerDelegate {
             }
         }.store(in: &tasks)
     }
+
 }

@@ -17,9 +17,11 @@ class AccountInfoManager {
     }
 
     var accountActive: Bool = true
+
 }
 
 extension AccountInfoManager {
+
     var trxBalancePublisher: AnyPublisher<BigUInt, Never> {
         trxBalanceSubject.eraseToAnyPublisher()
     }
@@ -29,7 +31,7 @@ extension AccountInfoManager {
     }
 
     func trc20BalancePublisher(contractAddress: Address) -> AnyPublisher<BigUInt, Never> {
-        trc20BalanceSubject.filter { $0.0 == contractAddress }.map(\.1).eraseToAnyPublisher()
+        trc20BalanceSubject.filter{ $0.0 == contractAddress }.map { $0.1 }.eraseToAnyPublisher()
     }
 
     func handle(accountInfoResponse: AccountInfoResponse) {
@@ -49,4 +51,5 @@ extension AccountInfoManager {
         accountActive = false
         trxBalanceSubject.send(BigUInt.zero)
     }
+
 }

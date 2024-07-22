@@ -1,5 +1,5 @@
-import Combine
 import Foundation
+import Combine
 
 class TransactionManager {
     private let userAddress: Address
@@ -17,6 +17,7 @@ class TransactionManager {
 }
 
 extension TransactionManager {
+
     var fullTransactionsPublisher: AnyPublisher<([FullTransaction], Bool), Never> {
         fullTransactionsSubject.eraseToAnyPublisher()
     }
@@ -79,26 +80,27 @@ extension TransactionManager {
             }
 
             return Transaction(
-                hash: response.txId,
-                timestamp: response.blockTimestamp,
-                isFailed: response.ret.contains(where: { $0.contractRet != "SUCCESS" }),
-                blockNumber: response.blockNumber,
-                confirmed: true,
-                fee: response.ret.first?.fee,
-                netUsage: response.netUsage,
-                netFee: response.netFee,
-                energyUsage: response.energyUsage,
-                energyFee: response.energyFee,
-                energyUsageTotal: response.energyUsageTotal,
-                contractsMap: response.rawData.contract
-            )
+                    hash: response.txId,
+                    timestamp: response.blockTimestamp,
+                    isFailed: response.ret.contains(where: { $0.contractRet != "SUCCESS" }),
+                    blockNumber: response.blockNumber,
+                    confirmed: true,
+                    fee: response.ret.first?.fee,
+                    netUsage: response.netUsage,
+                    netFee: response.netFee,
+                    energyUsage: response.energyUsage,
+                    energyFee: response.energyFee,
+                    energyUsageTotal: response.energyUsageTotal,
+                    contractsMap: response.rawData.contract
+                )
         }
         storage.save(transactions: transactionRecords, replaceOnConflict: true)
     }
 
+
     func save(trc20TransferResponses: [Trc20TransactionResponse]) {
         let trc20TransferRecords = trc20TransferResponses.compactMap { response -> Trc20EventRecord? in
-            Trc20EventRecord(
+            return Trc20EventRecord(
                 transactionHash: response.transactionId,
                 type: response.type,
                 blockTimestamp: response.blockTimestamp,
@@ -161,14 +163,6 @@ extension TransactionManager {
         process(initial: false)
     }
 
-    func tagTokens() -> [TagToken] {
-        do {
-            return try storage.tagTokens()
-        } catch {
-            print("Failed to fetch tag tokens: \(error)")
-            return []
-        }
-    }
 }
 
 public protocol ITransactionDecorator {

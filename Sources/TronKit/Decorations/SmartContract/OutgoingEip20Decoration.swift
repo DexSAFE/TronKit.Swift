@@ -17,9 +17,10 @@ public class OutgoingEip20Decoration: TransactionDecoration {
         super.init()
     }
 
-    override public func tags(userAddress _: Address) -> [TransactionTag] {
+    public override func tags(userAddress: Address) -> [TransactionTag] {
         [
-            TransactionTag(type: .outgoing, protocol: .eip20, contractAddress: contractAddress, addresses: [to.hex]),
+            TransactionTag(type: .outgoing, protocol: .eip20, contractAddress: contractAddress)
         ]
     }
+
 }

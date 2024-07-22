@@ -6,9 +6,11 @@ class ChainParameterManager {
         self.tronGridProvider = tronGridProvider
         self.storage = storage
     }
+
 }
 
 extension ChainParameterManager {
+
     var сreateNewAccountFeeInSystemContract: Int {
         storage.chainParameter(key: "getCreateNewAccountFeeInSystemContract") ?? 1_000_000
     }
@@ -18,7 +20,7 @@ extension ChainParameterManager {
     }
 
     var transactionFee: Int {
-        storage.chainParameter(key: "getTransactionFee") ?? 1000
+        storage.chainParameter(key: "getTransactionFee") ?? 1_000
     }
 
     var energyFee: Int {
@@ -31,4 +33,5 @@ extension ChainParameterManager {
             storage.saveChainParameter(key: parameter.key, value: parameter.value)
         }
     }
+
 }

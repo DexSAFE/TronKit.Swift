@@ -1,5 +1,5 @@
-import BigInt
 import Foundation
+import BigInt
 
 open class UnknownTransactionDecoration: TransactionDecoration {
     public let toAddress: Address?
@@ -13,17 +13,17 @@ open class UnknownTransactionDecoration: TransactionDecoration {
     public let events: [Event]
 
     init(contract: TriggerSmartContract?, internalTransactions: [InternalTransaction], events: [Event]) {
-        fromAddress = contract?.ownerAddress
-        toAddress = contract?.contractAddress
-        data = contract?.data.hs.hexData
-        value = contract?.callValue
-        tokenValue = contract?.callTokenValue
-        tokenId = contract?.tokenId
+        self.fromAddress = contract?.ownerAddress
+        self.toAddress = contract?.contractAddress
+        self.data = contract?.data.hs.hexData
+        self.value = contract?.callValue
+        self.tokenValue = contract?.callTokenValue
+        self.tokenId = contract?.tokenId
         self.internalTransactions = internalTransactions
         self.events = events
     }
 
-    override public func tags(userAddress: Address) -> [TransactionTag] {
+    public override func tags(userAddress: Address) -> [TransactionTag] {
         Array(Set(tagsFromInternalTransactions(userAddress: userAddress) + tagsFromEventInstances(userAddress: userAddress)))
     }
 
@@ -31,11 +31,11 @@ open class UnknownTransactionDecoration: TransactionDecoration {
         let value = value ?? 0
         let incomingInternalTransactions = internalTransactions.filter { $0.to == userAddress }
 
-        var outgoingValue = 0
+        var outgoingValue: Int = 0
         if fromAddress == userAddress {
             outgoingValue = value
         }
-        var incomingValue = 0
+        var incomingValue: Int = 0
         if toAddress == userAddress {
             incomingValue = value
         }
@@ -44,21 +44,16 @@ open class UnknownTransactionDecoration: TransactionDecoration {
         }
 
         // if has value or has internalTxs must add Evm tag
-        if outgoingValue == 0, incomingValue == 0 {
+        if outgoingValue == 0 && incomingValue == 0 {
             return []
         }
 
         var tags = [TransactionTag]()
 
-        var addresses = [fromAddress, toAddress]
-            .compactMap { $0 }
-            .filter { $0 != userAddress }
-            .map(\.hex)
-
         if incomingValue > outgoingValue {
-            tags.append(TransactionTag(type: .incoming, protocol: .native, addresses: addresses))
+            tags.append(TransactionTag(type: .incoming, protocol: .native))
         } else if outgoingValue > incomingValue {
-            tags.append(TransactionTag(type: .outgoing, protocol: .native, addresses: addresses))
+            tags.append(TransactionTag(type: .outgoing, protocol: .native))
         }
 
         return tags
@@ -73,4 +68,5 @@ open class UnknownTransactionDecoration: TransactionDecoration {
 
         return tags
     }
+
 }

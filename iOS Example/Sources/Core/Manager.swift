@@ -1,6 +1,6 @@
 import Foundation
-import HdWalletKit
 import TronKit
+import HdWalletKit
 
 class Manager {
     static let shared = Manager()
@@ -22,20 +22,21 @@ class Manager {
 
     private func initKit(address: Address, configuration: Configuration, signer: Signer?) throws {
         let TronKit = try Kit.instance(
-            address: address,
-            network: configuration.network,
-            walletId: "walletId",
-            apiKey: nil,
-            minLogLevel: configuration.minLogLevel
+                address: address,
+                network: configuration.network,
+                walletId: "walletId",
+                apiKey: nil,
+                minLogLevel: configuration.minLogLevel
         )
 
         adapter = TrxAdapter(TronKit: TronKit, signer: signer)
 
-        tronKit = TronKit
+        self.tronKit = TronKit
         self.signer = signer
 
         TronKit.start()
     }
+
 
     private func initKit(words: [String]) throws {
         let configuration = Configuration.shared
@@ -47,9 +48,9 @@ class Manager {
         let signer = try Signer.instance(seed: seed)
 
         try initKit(
-            address: Signer.address(seed: seed),
-            configuration: configuration,
-            signer: signer
+                address: try Signer.address(seed: seed),
+                configuration: configuration,
+                signer: signer
         )
     }
 
@@ -90,9 +91,11 @@ class Manager {
         UserDefaults.standard.removeObject(forKey: keyAddress)
         UserDefaults.standard.synchronize()
     }
+
 }
 
 extension Manager {
+
     func login(words: [String]) throws {
         try Kit.clear(exceptFor: ["walletId"])
 
@@ -114,10 +117,13 @@ extension Manager {
         tronKit = nil
         adapter = nil
     }
+
 }
 
 extension Manager {
+
     enum LoginError: Error {
         case seedGenerationFailed
     }
+
 }

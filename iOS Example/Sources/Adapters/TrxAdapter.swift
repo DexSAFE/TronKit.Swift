@@ -1,7 +1,7 @@
-import BigInt
-import Combine
 import Foundation
+import Combine
 import TronKit
+import BigInt
 
 class TrxAdapter {
     private let tronKit: Kit
@@ -9,7 +9,7 @@ class TrxAdapter {
     private let decimal = 6
 
     init(TronKit: Kit, signer: Signer?) {
-        tronKit = TronKit
+        self.tronKit = TronKit
         self.signer = signer
     }
 
@@ -25,9 +25,11 @@ class TrxAdapter {
             decoration: fullTransaction.decoration
         )
     }
+
 }
 
 extension TrxAdapter {
+
     func start() {
         tronKit.start()
     }
@@ -96,7 +98,7 @@ extension TrxAdapter {
         tronKit.transactions(tagQueries: [], fromHash: hash, limit: limit).compactMap { transactionRecord(fullTransaction: $0) }
     }
 
-    func transaction(hash _: Data, interTransactionIndex _: Int) -> TransactionRecord? {
+    func transaction(hash: Data, interTransactionIndex: Int) -> TransactionRecord? {
         nil
     }
 
@@ -117,16 +119,19 @@ extension TrxAdapter {
     }
 
     func send(contract: Contract, feeLimit: Int?) async throws {
-        guard let signer else {
+        guard let signer = signer else {
             throw SendError.noSigner
         }
 
         try await tronKit.send(contract: contract, signer: signer, feeLimit: feeLimit)
     }
+
 }
 
 extension TrxAdapter {
+
     enum SendError: Error {
         case noSigner
     }
+
 }

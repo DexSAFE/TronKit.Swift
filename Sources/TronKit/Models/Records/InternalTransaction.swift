@@ -52,4 +52,5 @@ public class InternalTransaction: Record {
         container[Columns.value] = value
         container[Columns.internalTxId] = internalTxId
     }
+
 }
